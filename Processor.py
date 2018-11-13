@@ -34,6 +34,7 @@ class PageTable:
         self.currentFrame=0
     def __getitem__(self,index):
         return self.pageEntries[index]
+
     def __setitem__(self,index,value):
         self.pageEntries[index] = value
 
@@ -57,9 +58,9 @@ class ProcessTable:
     def access(self,memoryAddress):
         Counter.access()
         pageIndex = memoryAddress >> 10
-        print("CurrentProcess: ",self.currentProcess)
-        print("pageIndex: ",pageIndex)
-        print("value: ",self.pageTables[self.currentProcess][pageIndex])
+        #print("CurrentProcess: ",self.currentProcess)
+        #print("pageIndex: ",pageIndex)
+        #print("value: ",self.pageTables[self.currentProcess][pageIndex])
         if self.pageTables[self.currentProcess][pageIndex] is None:
             pte = PageTableEntry(self.currentProcess, memoryAddress)
             pte.placeInMem()
@@ -71,7 +72,7 @@ class ProcessTable:
             if self.pageTables[self.currentProcess][pageIndex].inMem:
                 Counter.hit()
             else:
-                print("ELSE")
+                #print("ELSE")
                 Counter.miss()
                 pte = self.pageTables[self.currentProcess][pageIndex].placeInMem()
                 #print("inMem",pte.inMem)
@@ -83,7 +84,7 @@ class ProcessTable:
             self.memory[self.currentMemory] = pte
         else:
             tmpPTE = self.memory[self.currentMemory]
-            print(tmpPTE.pageTableID,":",tmpPTE.value)
+            #print(tmpPTE.pageTableID,":",tmpPTE.value)
             self.pageTables[tmpPTE.pageTableID][tmpPTE.value >> 10].placeInDisk()
             self.memory[self.currentMemory] = pte
 
@@ -107,20 +108,16 @@ if __name__ == '__main__':
         with open(sys.argv[1], mode='r') as file:
             processTable = ProcessTable()
             #print(processTable.currentProcess)
-            i=0
+            #i=0
             for line in file:
                 read(processTable,line)
                 #print(processTable.currentMemory)
-                i+=1
+                #i+=1
 
-            print("Access: ", Counter.accesses)
-            print("hits: ", Counter.hits)
-            print("compMisses: ", Counter.compulsoryMisses)
-            print("mmisses: ", Counter.misses)
+            print("Accesses: ", Counter.accesses)
+            print("Hits: ", Counter.hits)
+            print("Compulsory Misses: ", Counter.compulsoryMisses)
+            print("Misses: ", Counter.misses)
         
     except FileNotFoundError:
         print("(null): can't open file '%s': [Errno 2] No such file or directory"%sys.argv[1])
-   # print(ProcessTable.accesses)
-
-
-
