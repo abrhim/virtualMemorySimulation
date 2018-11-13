@@ -6,11 +6,6 @@ import sys
 import numpy
 import Counter
 
-class Memory:
-
-    def __init__(self):
-        self.frames = [None]*30
-        self.currentFrame = 0
 
 class PageTableEntry:
     def __init__(self,pageTableID,value):
