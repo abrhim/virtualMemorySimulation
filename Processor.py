@@ -58,9 +58,6 @@ class ProcessTable:
     def access(self,memoryAddress):
         Counter.access()
         pageIndex = memoryAddress >> 10
-        #print("CurrentProcess: ",self.currentProcess)
-        #print("pageIndex: ",pageIndex)
-        #print("value: ",self.pageTables[self.currentProcess][pageIndex])
         if self.pageTables[self.currentProcess][pageIndex] is None:
             pte = PageTableEntry(self.currentProcess, memoryAddress)
             pte.placeInMem()
@@ -72,10 +69,8 @@ class ProcessTable:
             if self.pageTables[self.currentProcess][pageIndex].inMem:
                 Counter.hit()
             else:
-                #print("ELSE")
                 Counter.miss()
                 pte = self.pageTables[self.currentProcess][pageIndex].placeInMem()
-                #print("inMem",pte.inMem)
                 self.putIntoMemory(pte)
         
     def putIntoMemory(self,pte):
@@ -84,17 +79,14 @@ class ProcessTable:
             self.memory[self.currentMemory] = pte
         else:
             tmpPTE = self.memory[self.currentMemory]
-            #print(tmpPTE.pageTableID,":",tmpPTE.value)
             self.pageTables[tmpPTE.pageTableID][tmpPTE.value >> 10].placeInDisk()
             self.memory[self.currentMemory] = pte
-
 
 
 commands = {"access": lambda num, processTable: processTable.access(num),
             "new": lambda num, processTable: processTable.newTable(num),
             "switch": lambda num, processTable: processTable.switch(num)
             }
-
 
 def read(processTable,line):
     inputArr= line.split()
@@ -107,12 +99,8 @@ if __name__ == '__main__':
 
         with open(sys.argv[1], mode='r') as file:
             processTable = ProcessTable()
-            #print(processTable.currentProcess)
-            #i=0
             for line in file:
                 read(processTable,line)
-                #print(processTable.currentMemory)
-                #i+=1
 
             print("Accesses: ", Counter.accesses)
             print("Hits: ", Counter.hits)
